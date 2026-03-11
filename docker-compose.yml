@@ -1,19 +1,20 @@
 services:
-  pyreview:
-    build: .
+  jupyter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     ports:
-      - "8000:8000"
-    env_file:
-      - .env
+      - "8888:8888"
     volumes:
-      - pyreview-data:/data
-      - ./config.yaml:/app/config.yaml:ro
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - .:/workspace
+    working_dir: /workspace
 
-volumes:
-  pyreview-data:
+  python:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    entrypoint: ["python"]
+    profiles: ["cli"]

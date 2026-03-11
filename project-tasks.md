@@ -1,14 +1,8 @@
 # Course: Computer Applications in Civil Engineering (1090340)
 
-## Course Info
-- **Campus:** Ashdod | **Year:** 2025-2026
-- **Department:** Civil Engineering | **Type:** Elective
-- **Level:** B.Sc. | **Study Year:** 4th
-- **Semester:** B | **Credits:** 0.25 (ECTS: 0.38)
-- **Delivery:** Fully online, Project-oriented
+
 - **Prerequisites:** Computer Programming for Civil Engineering (1022331)
-- **Language:** Hebrew | **Environment:** Workshop
-- **Lecturer:** Dr. Amit Keni — amitke@sce.ac.il
+
 
 ---
 
