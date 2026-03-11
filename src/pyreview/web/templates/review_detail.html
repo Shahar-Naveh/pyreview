@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}pyreview - Review Details{% endblock %}
+
+{% block content %}
+{% if review %}
+<!-- Summary -->
+<div class="mb-8">
+    <div class="flex items-center gap-4 mb-4">
+        <h1 class="text-3xl font-bold">Review {{ review.request.id[:8] }}</h1>
+        <span class="px-3 py-1 rounded text-sm
+            {% if review.status.value == 'completed' %}bg-green-900 text-green-300
+            {% elif review.status.value == 'running' %}bg-yellow-900 text-yellow-300
+            {% else %}bg-gray-800 text-gray-300{% endif %}">
+            {{ review.status.value }}
+        </span>
+    </div>
+
+    {% if review.summary %}
+    <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+        <div class="flex items-center gap-6 mb-4">
+            <div class="text-4xl font-bold
+                {% if review.summary.overall_score >= 7 %}text-green-400
+                {% elif review.summary.overall_score >= 4 %}text-yellow-400
+                {% else %}text-red-400{% endif %}">
+                {{ "%.1f"|format(review.summary.overall_score) }}<span class="text-lg text-gray-500">/10</span>
+            </div>
+            <div class="px-4 py-2 rounded-lg text-sm font-medium uppercase
+                {% if review.summary.verdict == 'approve' %}bg-green-900 text-green-300
+                {% elif review.summary.verdict == 'request_changes' %}bg-red-900 text-red-300
+                {% else %}bg-yellow-900 text-yellow-300{% endif %}">
+                {{ review.summary.verdict }}
+            </div>
+        </div>
+        <p class="text-gray-300">{{ review.summary.executive_summary }}</p>
+
+        {% if review.summary.strengths %}
+        <div class="mt-4">
+            <h3 class="text-sm font-semibold text-green-400 mb-2">Strengths</h3>
+            <ul class="text-sm text-gray-400 space-y-1">
+                {% for s in review.summary.strengths %}
+                <li>+ {{ s }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if review.summary.top_concerns %}
+        <div class="mt-4">
+            <h3 class="text-sm font-semibold text-red-400 mb-2">Concerns</h3>
+            <ul class="text-sm text-gray-400 space-y-1">
+                {% for c in review.summary.top_concerns %}
+                <li>- {{ c }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Findings -->
+<h2 class="text-xl font-bold mb-4">Findings ({{ review.all_findings|length }})</h2>
+<div class="space-y-4">
+    {% for f in review.all_findings %}
+    <div class="bg-gray-900 rounded-xl p-5 border border-gray-800">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="px-2 py-1 rounded text-xs font-bold uppercase
+                {% if f.severity.value == 'critical' %}bg-red-900 text-red-300
+                {% elif f.severity.value == 'high' %}bg-orange-900 text-orange-300
+                {% elif f.severity.value == 'medium' %}bg-yellow-900 text-yellow-300
+                {% elif f.severity.value == 'low' %}bg-cyan-900 text-cyan-300
+                {% else %}bg-gray-800 text-gray-400{% endif %}">
+                {{ f.severity.value }}
+            </span>
+            <span class="px-2 py-1 rounded text-xs bg-gray-800 text-gray-400">{{ f.agent }}</span>
+            <span class="text-sm font-bold">{{ f.title }}</span>
+        </div>
+        <p class="text-sm text-gray-400 mb-2">{{ f.description }}</p>
+        <div class="text-xs text-gray-600">
+            {{ f.location.file }} : L{{ f.location.start_line }}
+        </div>
+        {% if f.fix_suggestion %}
+        <details class="mt-3">
+            <summary class="text-sm text-brand-500 cursor-pointer hover:text-brand-400">
+                View Suggested Fix
+            </summary>
+            <pre class="mt-2 bg-gray-950 rounded p-3 text-xs overflow-x-auto border border-gray-800"><code>{{ f.fix_suggestion.diff or f.fix_suggestion.suggested_code }}</code></pre>
+        </details>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="text-gray-600 text-sm mt-8">
+    Time: {{ review.total_execution_time_seconds }}s |
+    Tokens: {{ review.total_token_usage }}
+</div>
+
+{% else %}
+<div class="text-center py-16">
+    <p class="text-gray-500 text-lg">Review not found</p>
+    <a href="/" class="inline-block mt-4 text-brand-500 hover:text-brand-400">Back to Dashboard</a>
+</div>
+{% endif %}
+{% endblock %}

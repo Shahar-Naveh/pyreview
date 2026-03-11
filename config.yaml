@@ -1,0 +1,24 @@
+default_model: claude-sonnet-4-5-20250929
+parallel_agents: true
+severity_threshold: low
+max_files: 20
+
+security:
+  enabled: true
+  temperature: 0.1
+
+performance:
+  enabled: true
+  temperature: 0.2
+
+style:
+  enabled: true
+  temperature: 0.3
+
+architecture:
+  enabled: true
+  temperature: 0.2
+
+engineering:
+  enabled: true
+  temperature: 0.2

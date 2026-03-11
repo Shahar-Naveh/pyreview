@@ -1,0 +1,18 @@
+--- a/calculator.py
++++ b/calculator.py
+@@ -1,8 +1,12 @@
++import subprocess
++import shlex
+ import os
+
+-def run(cmd):
+-    os.system(cmd)
++def run(cmd: str) -> None:
++    """Run a command safely."""
++    subprocess.run(shlex.split(cmd), check=True)
+
+ def add(a, b):
+     return a + b
++
++def multiply(a, b):
++    return a * b
